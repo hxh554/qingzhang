@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-cloud
+*.local
+.env
+.env.*
+!.env.example
+.DS_Store
+shot-*.png
+crop-*.png
+e2e-*.png
+dbg-*.png
+qingzhang-static-web.zip
