@@ -1,16 +1,17 @@
 import { chromium } from 'playwright-core';
 
-const BASE = 'http://127.0.0.1:5199/';
+const BASE = process.argv[2] || 'http://127.0.0.1:5199/';
 const log = (...a) => console.log(...a);
 
+log('检测地址:', BASE);
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const ctx = await browser.newContext({ viewport: { width: 420, height: 880 } });
 const p = await ctx.newPage();
 const errs = [];
 p.on('pageerror', e => errs.push(e.message));
 
-await p.goto(BASE, { waitUntil: 'networkidle' });
-await p.waitForTimeout(2500);
+await p.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await p.waitForTimeout(3500);
 
 const mf = await p.evaluate(async () => {
   const link = document.querySelector('link[rel=manifest]');
