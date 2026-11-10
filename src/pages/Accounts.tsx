@@ -40,9 +40,10 @@ export default function Accounts() {
             </div>
             <label className="check"><input type="checkbox" checked={showHidden} onChange={e => setShowHidden(e.target.checked)} /> 显示已隐藏的账户</label>
           </div>
+          <div className="table-scroll">
           <table className="table">
             <thead><tr>
-              <th style={{ width: '26%' }}>账户名称</th><th>余额</th><th>币种</th><th>计入资产</th><th>备注</th><th className="right">操作</th>
+              <th style={{ width: '26%' }}>账户名称</th><th>余额</th><th className="hide-sm">币种</th><th className="hide-sm">计入资产</th><th className="hide-sm">备注</th><th className="right">操作</th>
             </tr></thead>
             <tbody>
               {list.map(a => {
@@ -51,9 +52,9 @@ export default function Accounts() {
                   <tr key={a.id}>
                     <td><span style={{ fontSize: 16, marginRight: 8 }}>{a.icon}</span>{a.name} <span className="pill">{ACC_TYPES.find(t => t[0] === a.type)?.[1] ?? a.type}</span></td>
                     <td className={`num ${b < 0 ? 'expense' : ''}`}>{fmt(a.isLiability ? -b : b)}</td>
-                    <td className="muted">CNY</td>
-                    <td className="muted">{a.includeInAssets ? '是' : '否'}</td>
-                    <td className="muted">{a.remark ?? '-'}</td>
+                    <td className="muted hide-sm">CNY</td>
+                    <td className="muted hide-sm">{a.includeInAssets ? '是' : '否'}</td>
+                    <td className="muted hide-sm">{a.remark ?? '-'}</td>
                     <td><div className="row-actions" style={{ justifyContent: 'flex-end' }}>
                       <button className="btn-text" onClick={() => setAdjusting(a)}>余额调整</button>
                       <button className="btn-text" onClick={() => setEditing(a)}><IconEdit /></button>
@@ -70,6 +71,7 @@ export default function Accounts() {
               })}
             </tbody>
           </table>
+          </div>
           {!list.length && <div className="empty"><div className="empty-sub">还没有{tab === 'asset' ? '资产' : '负债'}账户，点右上角新建</div></div>}
         </div>
       </div>

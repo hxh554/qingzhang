@@ -23,14 +23,15 @@ export default function Projects() {
             <div className="flex-1" />
             <button className="btn btn-primary" onClick={() => setEditing('NEW')}><IconPlus /> 新增项目</button>
           </div>
+          <div className="table-scroll">
           <table className="table">
-            <thead><tr><th style={{ width: '40%' }}>项目名称</th><th>支出金额</th><th>笔数</th><th className="right">操作</th></tr></thead>
+            <thead><tr><th style={{ width: '40%' }}>项目名称</th><th>支出金额</th><th className="hide-sm">笔数</th><th className="right">操作</th></tr></thead>
             <tbody>
               {projects.map(p => (
                 <tr key={p.id}>
                   <td><span style={{ fontSize: 16, marginRight: 8 }}>{p.icon}</span>{p.name}</td>
                   <td className="num">{fmt(totalOf(p.id))}</td>
-                  <td className="muted">{countOf(p.id)} 笔</td>
+                  <td className="muted hide-sm">{countOf(p.id)} 笔</td>
                   <td><div className="row-actions" style={{ justifyContent: 'flex-end' }}>
                     <button className="btn-text" onClick={() => setEditing(p)}><IconEdit /></button>
                     <button className="btn-text danger" onClick={async () => {
@@ -44,6 +45,7 @@ export default function Projects() {
               ))}
             </tbody>
           </table>
+          </div>
           {!projects.length && <div className="empty"><div className="empty-sub">还没有项目，点右上角新增</div></div>}
         </div>
       </div>

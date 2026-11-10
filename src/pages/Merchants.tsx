@@ -28,14 +28,15 @@ export default function Merchants() {
             <div className="flex-1" />
             <button className="btn btn-primary" onClick={() => setEditing('NEW')}><IconPlus /> 新增商家</button>
           </div>
+          <div className="table-scroll">
           <table className="table">
-            <thead><tr><th style={{ width: '40%' }}>商家名称</th><th>消费金额</th><th>笔数</th><th className="right">操作</th></tr></thead>
+            <thead><tr><th style={{ width: '40%' }}>商家名称</th><th>消费金额</th><th className="hide-sm">笔数</th><th className="right">操作</th></tr></thead>
             <tbody>
               {merchants.map(m => (
                 <tr key={m.id}>
                   <td><span style={{ fontSize: 16, marginRight: 8 }}>{m.icon}</span>{m.name}</td>
                   <td className="num">{fmt(totalOf(m.id))}</td>
-                  <td className="muted">{countOf(m.id)} 笔</td>
+                  <td className="muted hide-sm">{countOf(m.id)} 笔</td>
                   <td><div className="row-actions" style={{ justifyContent: 'flex-end' }}>
                     <button className="btn-text" onClick={() => setEditing(m)}><IconEdit /></button>
                     <button className="btn-text danger" onClick={async () => {
@@ -49,6 +50,7 @@ export default function Merchants() {
               ))}
             </tbody>
           </table>
+          </div>
           {!merchants.length && <div className="empty"><div className="empty-sub">还没有商家，点右上角新增</div></div>}
         </div>
       </div>

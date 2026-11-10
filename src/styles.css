@@ -54,6 +54,20 @@ input, select, textarea { outline: none; }
   flex-shrink: 0;
 }
 
+.sidebar-brand { display: flex; align-items: center; gap: 8px; padding: 0 4px 12px; }
+.brand-mark {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 500;
+}
+.brand-name { font-size: 14.5px; font-weight: 500; }
+.sheet-close { display: none; margin-left: auto; color: var(--text-3); font-size: 15px; padding: 4px 8px; border-radius: 6px; }
+
+/* 仅手机端出现的元素，PC 端默认隐藏 */
+.tabbar, .nav-mask { display: none; }
+.topbar .back.nav-toggle { display: none; }
+
 .sidebar .add-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   height: 40px; border-radius: 999px;
@@ -194,7 +208,7 @@ textarea.input { height: auto; padding: 8px 12px; resize: vertical; }
 /* ===== 弹窗 ===== */
 .modal-mask {
   position: fixed; inset: 0; background: rgba(0, 0, 0, .32);
-  display: flex; align-items: center; justify-content: center; z-index: 100;
+  display: flex; align-items: center; justify-content: center; z-index: 400;
   animation: fadeIn .15s;
 }
 .modal {
@@ -304,4 +318,138 @@ textarea.input { height: auto; padding: 8px 12px; resize: vertical; }
 .num { transition: filter .16s ease; }
 html.qz-private .num { filter: blur(5px); user-select: none; }
 html.qz-private .qz-blur { filter: blur(5px); user-select: none; }
+
+/* =========================================================
+   手机 / 平板适配（≤900px）
+   思路：侧边栏变抽屉，底部接管主要导航，表格横向滚动不挤压
+   ========================================================= */
+@media (max-width: 900px) {
+  :root { --topbar-h: 50px; }
+
+  .only-pc { display: none !important; }
+  .topbar .back.nav-toggle { display: flex; }
+  .sheet-close { display: block; }
+
+  /* --- 侧边栏 → 抽屉 --- */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 300;
+    width: 78vw; max-width: 280px;
+    flex-shrink: 0;
+    transform: translateX(-103%);
+    transition: transform .24s cubic-bezier(.22, .8, .28, 1);
+    box-shadow: 0 0 44px rgba(0, 0, 0, .22);
+    padding: calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .nav-mask {
+    display: block; position: fixed; inset: 0; z-index: 250;
+    background: rgba(0, 0, 0, .38);
+    animation: fadeIn .16s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-item { height: 44px; font-size: 14.5px; }
+  .nav-group .nav-item { height: 40px; font-size: 14px; }
+
+  /* --- 底部导航 --- */
+  .tabbar {
+    display: flex; align-items: center;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+    height: calc(58px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255, 255, 255, .97);
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .tab-item {
+    flex: 1; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    color: var(--text-3); font-size: 10.5px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab-item.on { color: var(--primary); }
+  .tab-item svg { width: 20px; height: 20px; }
+
+  .tab-add {
+    width: 52px; height: 52px; border-radius: 50%; flex: 0 0 auto;
+    margin: -24px 4px 0;
+    background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 18px rgba(255, 138, 61, .45);
+  }
+  .tab-add:active { transform: scale(.94); }
+  .tab-add svg { width: 24px; height: 24px; }
+
+  /* --- 内容区 --- */
+  .page { padding: 14px 14px calc(80px + env(safe-area-inset-bottom)); }
+  .card { padding: 14px; border-radius: 14px; }
+  .hero-card { padding: 16px 16px 18px; }
+  .card-head { margin-bottom: 10px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  /* 报表页把列宽写在了行内样式里，只能 !important 压过去 */
+  .page-grid { grid-template-columns: 1fr !important; }
+
+  /* Tab 多了会竖排：改成横向滑动，别让文字断行 */
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; min-width: 0; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { white-space: nowrap; flex: 0 0 auto; padding: 10px 12px; }
+  .month-nav { flex-shrink: 0; }
+  /* 报表页顶部：tab 占满一行，月份选择器换到下一行 */
+  .report-top { flex-wrap: wrap; row-gap: 10px; }
+  .report-top .tabs { flex: 1 0 100% !important; margin-bottom: 0; }
+  .day-head { flex-wrap: wrap; row-gap: 4px; }
+
+  .topbar { padding: 0 10px 0 6px; gap: 8px; }
+  .topbar .book-name {
+    font-size: 14.5px; max-width: 44vw;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .topbar .back { padding: 8px; }
+
+  /* --- 弹窗：手机上从底部弹出、占满宽度 --- */
+  .modal-mask { align-items: flex-end; }
+  .app.has-modal .tabbar { display: none; }
+  .modal {
+    width: 100% !important; max-width: 100%;
+    max-height: 88vh;
+    border-radius: 18px 18px 0 0;
+    animation: sheetUp .22s cubic-bezier(.2, .9, .3, 1.05);
+  }
+  .modal-body { padding: 16px 16px calc(20px + env(safe-area-inset-bottom)); }
+  .modal-head { padding: 16px 16px 0; }
+  @keyframes sheetUp { from { transform: translateY(28px); opacity: .65; } }
+
+  /* --- 表格：次要列收起，其余 nowrap，实在放不下就在容器内横滑 --- */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -2px; }
+  .table th, .table td { padding: 10px 8px; white-space: nowrap; }
+  .table td:first-child, .table th:first-child { white-space: normal; }
+  .table .row-actions { opacity: 1; }
+  .hide-sm { display: none !important; }
+
+  /* 触屏没有 hover：流水行的编辑/删除要一直露出来 */
+  .tx-row .tx-ops { display: flex; }
+  .tx-row:hover .tx-amount { display: inline; }
+  .tx-row .tx-amount { font-size: 14.5px; }
+  .tx-row .tx-title { font-size: 13px; }
+  .tx-row { padding: 10px 4px; gap: 10px; }
+
+  /* 输入框在手机上别小于 16px，否则 iOS 会自动放大页面 */
+  .input, .select { font-size: 16px; height: 42px; }
+  .btn { height: 38px; }
+  .btn-text { height: auto; }
+  .input-lg { font-size: 26px; height: 50px; }
+
+  .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .cat-cell { padding: 9px 2px 7px; }
+  .cat-cell .ci { font-size: 21px; }
+}
+
+@media (max-width: 420px) {
+  .page { padding: 10px 10px calc(80px + env(safe-area-inset-bottom)); }
+  .card { padding: 12px; }
+  .tab-item { font-size: 10px; }
+  .topbar .book-name { max-width: 40vw; }
+}
 

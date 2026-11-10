@@ -30,8 +30,9 @@ export default function Members() {
           </div>
 
           <div className="muted" style={{ fontSize: 12.5, marginBottom: 6 }}>已加入账本</div>
+          <div className="table-scroll">
           <table className="table">
-            <thead><tr><th style={{ width: '24%' }}>成员</th><th>备注</th><th>角色</th><th>累计支出</th><th className="right">操作</th></tr></thead>
+            <thead><tr><th style={{ width: '24%' }}>成员</th><th className="hide-sm">备注</th><th className="hide-sm">角色</th><th>累计支出</th><th className="right">操作</th></tr></thead>
             <tbody>
               {joined.map(m => (
                 <tr key={m.id}>
@@ -39,8 +40,8 @@ export default function Members() {
                     <span className="cat-icon" style={{ background: 'var(--primary-50)', marginRight: 8 }}>{m.name.slice(0, 1)}</span>
                     {m.name}
                   </td>
-                  <td className="muted">{m.remark ?? '-'}</td>
-                  <td><span className="pill orange">{ROLES.find(r => r[0] === m.role)?.[1]}</span></td>
+                  <td className="muted hide-sm">{m.remark ?? '-'}</td>
+                  <td className="hide-sm"><span className="pill orange">{ROLES.find(r => r[0] === m.role)?.[1]}</span></td>
                   <td className="num">{fmt(spendOf(m.id))}</td>
                   <td><div className="row-actions" style={{ justifyContent: 'flex-end' }}>
                     <button className="btn-text" onClick={() => setEditing(m)}><IconEdit /></button>
@@ -55,11 +56,12 @@ export default function Members() {
               ))}
             </tbody>
           </table>
+          </div>
 
           {invited.length > 0 && (
             <>
               <div className="muted" style={{ fontSize: 12.5, margin: '18px 0 6px' }}>待接受邀请</div>
-              <table className="table">
+              <div className="table-scroll"><table className="table">
                 <tbody>
                   {invited.map(m => (
                     <tr key={m.id}>
@@ -69,7 +71,7 @@ export default function Members() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             </>
           )}
         </div>

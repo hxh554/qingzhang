@@ -168,7 +168,7 @@ export default function Reports() {
   return (
     <div className="page">
       <div className="page-narrow" style={{ maxWidth: 1200 }}>
-        <div className="flex" style={{ marginBottom: 4 }}>
+        <div className="flex report-top" style={{ marginBottom: 4 }}>
           <div className="tabs" style={{ flex: 1, marginBottom: 0 }}>
             {TABS.map(([k, label]) => (
               <button key={k} className={`tab${tab === k ? ' active' : ''}`} onClick={() => setTab(k)}>{label}</button>

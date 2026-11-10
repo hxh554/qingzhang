@@ -77,6 +77,7 @@ export default function Categories() {
             <label className="check"><input type="checkbox" checked={showHidden} onChange={e => setShowHidden(e.target.checked)} /> 显示已隐藏的分类</label>
           </div>
 
+          <div className="table-scroll">
           <table className="table">
             <thead><tr>
               <th style={{ width: '46%' }}>分类名称</th>
@@ -108,6 +109,7 @@ export default function Categories() {
               ))}
             </tbody>
           </table>
+          </div>
           {!parents.length && <div className="empty"><div className="empty-sub">还没有分类，点右上角新增</div></div>}
         </div>
       </div>

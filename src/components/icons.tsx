@@ -15,6 +15,8 @@ export const IconEye = ({ off }: { off?: boolean }) => (
 export const IconChevron = ({ up }: { up?: boolean }) => (
   <svg {...S} style={{ transform: up ? 'rotate(180deg)' : undefined }}><path d="m6 9 6 6 6-6" /></svg>
 );
+export const IconMenu = () => <svg {...S}><path d="M4 7h16M4 12h16M4 17h16" /></svg>;
+export const IconDots = () => <svg {...S}><circle cx="5" cy="12" r="1.4" fill="currentColor" /><circle cx="12" cy="12" r="1.4" fill="currentColor" /><circle cx="19" cy="12" r="1.4" fill="currentColor" /></svg>;
 export const IconBack = () => <svg {...S}><path d="m15 18-6-6 6-6" /></svg>;
 export const IconPlus = () => <svg {...S}><path d="M12 5v14M5 12h14" /></svg>;
 export const IconSearch = () => <svg {...S}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>;

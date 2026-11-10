@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRoute, navigate } from '../lib/router';
 import { useUi } from '../stores/ui';
-import { IconHome, IconList, IconChart, IconTag, IconSettings, IconPlus, IconChevron } from './icons';
+import { IconHome, IconList, IconChart, IconTag, IconSettings, IconPlus, IconChevron, IconMenu } from './icons';
 
 const MAIN = [
   { path: '/', label: '首页', Icon: IconHome },
@@ -20,21 +20,31 @@ const GROUP = [
 export function Sidebar() {
   const route = useRoute();
   const openQuickAdd = useUi(s => s.openQuickAdd);
+  const navOpen = useUi(s => s.navOpen);
+  const closeNav = useUi(s => s.closeNav);
   const [groupOpen, setGroupOpen] = useState(true);
   const inGroup = GROUP.some(g => route.startsWith(g.path));
+
+  const go = (path: string) => { navigate(path); closeNav(); };
 
   const item = (path: string, label: string, Icon?: any) => {
     const active = route === path || (path !== '/' && path !== '/tx' && route.startsWith(path));
     return (
       <button key={path} className={`nav-item${active ? ' active' : ''}`}
-        onClick={() => navigate(path)}>
+        onClick={() => go(path)}>
         {Icon && <Icon />}{label}
       </button>
     );
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${navOpen ? ' open' : ''}`}>
+      <div className="sidebar-brand">
+        <span className="brand-mark">¥</span>
+        <span className="brand-name">轻账</span>
+        <button className="sheet-close" onClick={closeNav} aria-label="关闭菜单">✕</button>
+      </div>
+
       <button className="add-btn" onClick={() => openQuickAdd('EXPENSE')}>
         <IconPlus /> 记一笔
       </button>

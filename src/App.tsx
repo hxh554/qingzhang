@@ -3,6 +3,7 @@ import { useRoute } from './lib/router';
 import { useUi } from './stores/ui';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
+import { TabBar } from './components/TabBar';
 import { QuickAddModal } from './components/QuickAddModal';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
@@ -21,20 +22,26 @@ import { useSync } from './stores/sync';
 
 export default function App() {
   const route = useRoute();
-  const { openQuickAdd, quickAddOpen, closeQuickAdd } = useUi();
+  const { openQuickAdd, quickAddOpen, closeQuickAdd, navOpen, closeNav } = useUi();
   const [authed, setAuthed] = useState<boolean | null>(cloudEnabled ? null : true);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       const typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
-      if (e.key === 'Escape' && quickAddOpen) { closeQuickAdd(); return; }
+      if (e.key === 'Escape') {
+        if (quickAddOpen) { closeQuickAdd(); return; }
+        if (navOpen) { closeNav(); return; }
+      }
       if (typing) return;
       if (e.key === 'n' || e.key === 'N') { e.preventDefault(); openQuickAdd('EXPENSE'); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [quickAddOpen]);
+  }, [quickAddOpen, navOpen]);
+
+  /* 切路由时收起手机端抽屉 */
+  useEffect(() => { closeNav(); }, [route]);
 
   /* 云端模式：先确认会话，再把账本绑好（拉全量 + 订阅实时） */
   useEffect(() => {
@@ -81,12 +88,14 @@ export default function App() {
   else page = <Dashboard />;
 
   return (
-    <div className="app">
+    <div className={`app${quickAddOpen ? ' has-modal' : ''}${navOpen ? ' has-nav' : ''}`}>
       <Sidebar />
+      {navOpen && <div className="nav-mask" onClick={closeNav} />}
       <div className="main">
         <Topbar />
         {page}
       </div>
+      <TabBar />
       <QuickAddModal />
     </div>
   );
