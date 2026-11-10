@@ -16,15 +16,13 @@ npm run preview  # 预览构建产物
 > 前提：把这个 `qingzhang` 目录作为**仓库根目录**推送（`.github/workflows/deploy.yml` 必须位于仓库根）。
 
 1. 在 GitHub 新建仓库（Public 免费；Private 需要 Pro 才能用 Pages）
-2. 推送代码（默认分支用 `main`）：
+2. 推送代码（默认分支用 `main`；仓库已经 `git init` + 首次提交过，直接加远端推送即可）：
    ```bash
-   git init
-   git add .
-   git commit -m "init qingzhang"
+   git remote add origin https://github.com/hanxiauhui2/qingzhang.git
    git branch -M main
-   git remote add origin https://github.com/<你的用户名>/<仓库名>.git
    git push -u origin main
    ```
+   > `.env` 已被 `.gitignore` 排除，不会被推上去；云端参数靠下面的 GitHub Secrets 注入。
 3. 仓库 → **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**
 4. 等 Actions 跑完（约 1 分钟），地址是 `https://<用户名>.github.io/<仓库名>/`
 
@@ -55,10 +53,11 @@ npm run preview  # 预览构建产物
 
 ### 用法
 
-- 第一个人注册 → 自动创建云端账本，本机现有账本会上传（含演示数据，可在「设置 → 清空全部数据」清掉）
+- 第一个人注册 → 自动创建云端账本（先清空本机演示数据再登录也行）。若本机已有想保留的流水，用 **设置 → 云端同步 → 上传本机流水** 手动推一次（首次登录不会自动灌演示数据，避免云端被示例数据污染）
 - 家人注册后，在 **设置 → 云端同步 → 加入家人的账本** 输入 6 位邀请码（24 小时有效），即可看到同一本账
 - 同一账号在手机/电脑同时登录，也是同一本账
 - 记账后本机立即生效，后台异步推送云端；对方通过 realtime 秒级收到。断网时进队列，恢复后自动重推
+- **国内网络提示**：Supabase 的 WebSocket（realtime）在国内常被掐断，所以额外加了「12 秒轮询兜底」——断线时改数据也能同步，只是慢十几秒。手机端切回前台会立即拉一次
 
 ### 安全说明
 
