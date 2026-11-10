@@ -5,6 +5,7 @@ import { resetDemoData, clearAllData, markSeeded } from '../db/seed';
 import { fmtDate } from '../lib/date';
 import { IconDownload, IconUpload } from '../components/icons';
 import { CloudPanel } from '../components/CloudPanel';
+import { InstallCard } from '../components/InstallCard';
 import { cloudEnabled } from '../lib/cloud';
 import { wipeCloud } from '../lib/sync';
 
@@ -98,6 +99,7 @@ export default function Settings() {
         </div>
 
         <CloudPanel />
+        <InstallCard />
 
         <div className="grid-2" style={{ marginBottom: 16 }}>
           <div className="card">
