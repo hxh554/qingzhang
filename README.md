@@ -15,14 +15,14 @@ npm run preview  # 预览构建产物
 
 > 前提：把这个 `qingzhang` 目录作为**仓库根目录**推送（`.github/workflows/deploy.yml` 必须位于仓库根）。
 
-1. 在 GitHub 新建仓库（Public 免费；Private 需要 Pro 才能用 Pages）
-2. 推送代码（默认分支用 `main`；仓库已经 `git init` + 首次提交过，直接加远端推送即可）：
+1. 在 GitHub 新建仓库（Public 免费；Private 需要 Pro 才能用 Pages）——**不要勾 Add a README / .gitignore / license**，否则远端先有提交会跟你本地打架
+2. 推送代码（默认分支用 `main`；仓库已经 `git init` + 提交过，直接加远端推送即可）：
    ```bash
-   git remote add origin https://github.com/hanxiauhui2/qingzhang.git
+   git remote add origin https://github.com/hxh554/qingzhang.git
    git branch -M main
    git push -u origin main
    ```
-   > `.env` 已被 `.gitignore` 排除，不会被推上去；云端参数靠下面的 GitHub Secrets 注入。
+   > `.env` 已被 `.gitignore` 排除，不会被推上去；构建时用的云端参数直接写在 workflow 里。
 3. 仓库 → **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**
 4. 等 Actions 跑完（约 1 分钟），地址是 `https://<用户名>.github.io/<仓库名>/`
 
@@ -49,7 +49,7 @@ npm run preview  # 预览构建产物
    VITE_SUPABASE_URL=https://xxxx.supabase.co
    VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
    ```
-5. 部署到 GitHub Pages 时，在仓库 **Settings → Secrets and variables → Actions** 里加同名的两个 secret，重新跑一次 workflow（workflow 已把 secret 传进构建）
+5. 部署到 GitHub Pages **不需要再配 Secrets**：云端参数已直接写在 `.github/workflows/deploy.yml` 的构建环境里（publishable key 本来就会打进前端 JS，靠 RLS 保护数据，不是秘密）。换 Supabase 项目时改那两行即可
 
 ### 用法
 

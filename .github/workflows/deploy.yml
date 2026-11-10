@@ -26,9 +26,16 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # 直接写死云端参数，省掉在仓库 Settings 里配 Secrets 的步骤。
+          # 这两个值会被打包进前端 JS，本来就是公开的（Supabase publishable key 靠数据库
+          # 里的 RLS 策略保护数据，不是靠藏 key），所以放在这里不增加任何风险。
+          # 换 Supabase 项目时改这两行即可。
+          VITE_SUPABASE_URL: https://kkujzunjoznrwvlvowrw.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_LIHYJOBBgpvfGzEXJsQfOg_R1_oB7DU
       - uses: actions/configure-pages@v5
+        with:
+          # 仓库没开 Pages 时自动开，省掉第一次手动去 Settings 点选
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
