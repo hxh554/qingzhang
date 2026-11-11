@@ -74,7 +74,7 @@ npm run preview  # 预览构建产物
 - **iPhone**：用 Safari 打开站点 → 分享按钮 → 添加到主屏幕
 - **Android**：Chrome → 右上角 ⋮ → 添加到主屏幕
 
-SW 是**网络优先**策略（在线永远拿最新版，不会卡在旧代码），跨域请求（Supabase）完全不缓存。图标由 `make-icons.mjs` 用无头浏览器渲染生成，改图标重跑一次即可。详见 `docs/部署与实时同步方案.md` 第十二节。
+SW 是**网络优先**策略（在线永远拿最新版，不会卡在旧代码），跨域请求（Supabase）完全不缓存。图标由 `scripts/make-icons.mjs` 用无头浏览器渲染生成，改图标重跑一次即可。详见 `docs/部署与实时同步方案.md` 第十二节。
 
 
 ## 目录
@@ -85,12 +85,17 @@ src/
   lib/         日期、金额、统计、分享编解码
   components/  MonthPicker、ShareModal、Chart、QuickAddModal…
   pages/       首页/流水/报表/分类/账户/成员/商家/项目/设置/Join
+scripts/       测试与图标生成脚本（不影响线上，说明见 scripts/README.md）
+docs/          部署与实时同步方案
+supabase/      建表 + RLS 策略 SQL
+tmp/           测试产出的截图等临时文件，随时可删（已 gitignore）
 ```
 
 ## 校验
 
 ```bash
-npm run build && node verify.mjs   # 需先起 preview（5199）
+npm run build && npm run preview        # 起本地服务（5199）
+node scripts/verify.mjs                 # 跑 14 个路由 + 记账/分享/加入链路
 ```
 
-`verify.mjs` 用 playwright-core 驱动本机 Chrome，跑 14 个路由 + 记一笔写入回显 + 月份选择器 + 分享链接导入链路。
+`scripts/verify.mjs` 用 playwright-core 驱动本机 Chrome，跑 14 个路由 + 记一笔写入回显 + 月份选择器 + 分享链接导入链路。其余脚本见 [`scripts/README.md`](scripts/README.md)。

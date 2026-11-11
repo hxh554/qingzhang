@@ -1,5 +1,11 @@
-import { chromium } from 'playwright-core';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
 import { mkdirSync } from 'node:fs';
+import { chromium } from 'playwright-core';
+
+/* 无论从哪里调用，都切回项目根目录执行：截图等临时产出统一写进 tmp/ */
+process.chdir(resolve(dirname(fileURLToPath(import.meta.url)), ".."));
+mkdirSync("tmp", { recursive: true });
 
 mkdirSync('public', { recursive: true });
 

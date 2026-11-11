@@ -1,7 +1,11 @@
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright-core';
 
-import { mkdirSync } from 'node:fs';
-mkdirSync('tmp', { recursive: true });
+/* 无论从哪里调用，都切回项目根目录执行：截图等临时产出统一写进 tmp/ */
+process.chdir(resolve(dirname(fileURLToPath(import.meta.url)), ".."));
+mkdirSync("tmp", { recursive: true });
 
 const BASE = 'http://127.0.0.1:5199/';
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
