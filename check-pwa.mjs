@@ -1,5 +1,8 @@
 import { chromium } from 'playwright-core';
 
+import { mkdirSync } from 'node:fs';
+mkdirSync('tmp', { recursive: true });
+
 const BASE = process.argv[2] || 'http://127.0.0.1:5199/';
 const log = (...a) => console.log(...a);
 
@@ -40,5 +43,5 @@ const theme = await p.evaluate(() => document.querySelector('meta[name=theme-col
 const appleIcon = await p.evaluate(() => document.querySelector('link[rel=apple-touch-icon]')?.href);
 log('theme-color:', theme, '| apple-touch-icon:', appleIcon ? 'OK' : '缺失');
 log('页面错误:', errs.length ? errs.join(' | ') : '无');
-await p.screenshot({ path: 'pwa-mobile.png' });
+await p.screenshot({ path: 'tmp/pwa-mobile.png' });
 await browser.close();

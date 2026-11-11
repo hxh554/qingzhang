@@ -1,5 +1,8 @@
 import { chromium } from 'playwright-core';
 
+import { mkdirSync } from 'node:fs';
+mkdirSync('tmp', { recursive: true });
+
 const BASE = 'http://127.0.0.1:5199';
 const ts = Date.now().toString().slice(-6);
 const EMAIL_A = `qz-a-${ts}@example.com`;
@@ -59,7 +62,7 @@ await A.p.goto(BASE + '/#/settings', { waitUntil: 'networkidle' });
 await A.p.waitForTimeout(2000);
 const setText = await A.p.locator('body').innerText();
 log('A 云端面板:', /云端同步/.test(setText) ? 'OK' : 'FAIL', '|', (setText.match(/(已连接|离线)[^\n]*/) ?? ['无'])[0]);
-await A.p.screenshot({ path: 'e2e-2-A-settings.png' });
+await A.p.screenshot({ path: 'tmp/e2e-2-A-settings.png' });
 
 await A.p.locator('button:has-text("生成邀请码")').click();
 let code = null;
@@ -76,7 +79,7 @@ for (let i = 0; i < 30; i++) {
 }
 log('邀请码:', code ?? 'FAIL');
 if (!code) log('  云端卡片:', (await A.p.locator('.card').nth(1).innerText().catch(() => '')).replace(/\n/g, ' / ').slice(0, 300));
-await A.p.screenshot({ path: 'e2e-3-A-invite.png' });
+await A.p.screenshot({ path: 'tmp/e2e-3-A-invite.png' });
 
 /* ---------- B ---------- */
 const B = await newPage('B');
@@ -85,7 +88,7 @@ const tb = Date.now();
 await signup(B.p, EMAIL_B);
 const bOk = await waitText(B.p, /本月收支统计/);
 log(`B 进入首页: ${bOk ? 'OK' : 'FAIL'} (${((Date.now() - tb) / 1000).toFixed(1)}s)`);
-await B.p.screenshot({ path: 'e2e-4-B-home.png' });
+await B.p.screenshot({ path: 'tmp/e2e-4-B-home.png' });
 
 if (code) {
   await B.p.goto('about:blank');
@@ -97,7 +100,7 @@ if (code) {
   const bt = await B.p.locator('body').innerText();
   log('B 加入后进首页:', joined ? 'OK' : 'CHECK');
   log('B 页面金额样本:', (bt.match(/[\d,]+\.\d{2}/g) ?? []).slice(0, 4).join(' / ') || '无');
-  await B.p.screenshot({ path: 'e2e-5-B-joined.png' });
+  await B.p.screenshot({ path: 'tmp/e2e-5-B-joined.png' });
 }
 
 /* ---------- A 记一笔 → 看 B 是否同步收到 ---------- */
@@ -126,7 +129,7 @@ if (!seen) {
   const t = await B.p.locator('body').innerText();
   log('  刷新后列表里有 88.88:', t.includes('88.88') ? '有（只是推送慢）' : '没有（同步失败）');
 }
-await B.p.screenshot({ path: 'e2e-6-B-synced.png' });
+await B.p.screenshot({ path: 'tmp/e2e-6-B-synced.png' });
 
 await browser.close();
 log('\nDONE', EMAIL_A, EMAIL_B, 'code', code);

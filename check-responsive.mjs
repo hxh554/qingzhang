@@ -1,5 +1,8 @@
 import { chromium } from 'playwright-core';
 
+import { mkdirSync } from 'node:fs';
+mkdirSync('tmp', { recursive: true });
+
 const BASE = 'http://127.0.0.1:5199/';
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 
@@ -11,7 +14,7 @@ async function shoot(w, h, tag, routes) {
   for (const [route, name] of routes) {
     await p.goto(BASE + route, { waitUntil: 'domcontentloaded' });
     await p.waitForTimeout(1200);
-    await p.screenshot({ path: `ui-${tag}-${name}.png` });
+    await p.screenshot({ path: `tmp/ui-${tag}-${name}.png` });
   }
   if (errs.length) console.log(`[${tag}] 页面错误:`, errs.join(' | '));
   return { ctx, p };
@@ -45,7 +48,7 @@ await p.locator('.nav-toggle').click();
 await p.waitForTimeout(500);
 const after = await p.evaluate(() => getComputedStyle(document.querySelector('.sidebar')).transform);
 console.log('点汉堡后 sidebar transform:', after);
-await p.screenshot({ path: 'ui-m-drawer.png' });
+await p.screenshot({ path: 'tmp/ui-m-drawer.png' });
 
 /* 点遮罩关闭 */
 await p.locator('.nav-mask').click({ position: { x: 360, y: 500 } });
@@ -60,7 +63,7 @@ console.log('点底部「流水」后 URL:', p.url());
 /* 记一笔弹窗在手机上的样子 */
 await p.locator('.tab-add').click();
 await p.waitForTimeout(700);
-await p.screenshot({ path: 'ui-m-add.png' });
+await p.screenshot({ path: 'tmp/ui-m-add.png' });
 const modalBox = await p.locator('.modal').boundingBox();
 console.log('弹窗尺寸:', JSON.stringify(modalBox));
 await p.keyboard.press('Escape');

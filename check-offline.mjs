@@ -1,5 +1,8 @@
 import { chromium } from 'playwright-core';
 
+import { mkdirSync } from 'node:fs';
+mkdirSync('tmp', { recursive: true });
+
 const BASE = process.argv[2] || 'http://127.0.0.1:5199/';
 console.log('检测地址:', BASE);
 
@@ -37,5 +40,5 @@ const txt = (await p.locator('body').innerText().catch(() => '')).replace(/\s+/g
 console.log('离线页面文本:', txt.slice(0, 90) || '(空)');
 console.log('离线可打开:', txt.length > 10 ? 'OK' : 'FAIL');
 console.log('控制台错误:', bad.length ? bad.join(' | ') : '无');
-await p.screenshot({ path: 'pwa-offline.png' });
+await p.screenshot({ path: 'tmp/pwa-offline.png' });
 await browser.close();

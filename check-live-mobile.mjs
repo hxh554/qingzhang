@@ -1,5 +1,8 @@
 import { chromium } from 'playwright-core';
 
+import { mkdirSync } from 'node:fs';
+mkdirSync('tmp', { recursive: true });
+
 /* 用法: node check-live-mobile.mjs https://hxh554.github.io/qingzhang/ */
 const BASE = process.argv[2] || 'http://127.0.0.1:5199/';
 console.log('目标站点:', BASE);
@@ -40,7 +43,7 @@ await p.locator('.nav-toggle').first().click();
 await p.waitForTimeout(600);
 const after = await p.evaluate(() => getComputedStyle(document.querySelector('.sidebar')).transform);
 console.log('点汉堡后 sidebar transform:', after);
-await p.screenshot({ path: 'live-m-drawer.png' });
+await p.screenshot({ path: 'tmp/live-m-drawer.png' });
 
 /* 遮罩关闭 */
 await p.locator('.nav-mask').click({ position: { x: 360, y: 500 } }).catch(() => {});
@@ -55,7 +58,7 @@ console.log('点底部「流水」后 URL:', p.url());
 /* ⊕ 记一笔 → 贴底弹窗 */
 await p.locator('.tab-add').click().catch(e => console.log('tab-add点击失败:', e.message));
 await p.waitForTimeout(800);
-await p.screenshot({ path: 'live-m-add.png' });
+await p.screenshot({ path: 'tmp/live-m-add.png' });
 const modal = await p.locator('.modal').boundingBox();
 console.log('弹窗尺寸:', JSON.stringify(modal));
 await p.keyboard.press('Escape');
@@ -65,11 +68,11 @@ await p.goto(BASE + '/#/tx', { waitUntil: 'domcontentloaded' });
 await p.waitForTimeout(1500);
 const overflow = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 console.log('流水页横向溢出(px):', overflow);
-await p.screenshot({ path: 'live-m-tx.png' });
+await p.screenshot({ path: 'tmp/live-m-tx.png' });
 
 await p.goto(BASE + '/#/projects', { waitUntil: 'domcontentloaded' });
 await p.waitForTimeout(1200);
-await p.screenshot({ path: 'live-m-projects.png' });
+await p.screenshot({ path: 'tmp/live-m-projects.png' });
 
 if (errs.length) console.log('页面JS错误:', errs.join(' | '));
 else console.log('无页面JS错误 ✓');

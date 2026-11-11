@@ -6,6 +6,8 @@ dist-cloud
 .env.*
 !.env.example
 .DS_Store
+# 测试/调试产出统一放这里，随时可整体删除
+tmp/
 shot-*.png
 crop-*.png
 e2e-*.png
